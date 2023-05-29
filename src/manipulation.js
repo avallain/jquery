@@ -169,7 +169,9 @@ jQuery.fn.extend({
 				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
-				value = value.replace( rxhtmlTag, "<$1></$2>" );
+				// CVE-2020-11022 and CVE-2020-11023 workaround adapted for 1.10.2
+				// https://github.com/jquery/jquery/security/advisories/GHSA-gxr4-xjj5-5px2
+				// value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
 					for (; i < l; i++ ) {

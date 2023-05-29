@@ -1,3 +1,4 @@
+/* AVA version from https://github.com/avallain/jquery.js */
 /*!
  * jQuery JavaScript Library v@VERSION
  * http://jquery.com/

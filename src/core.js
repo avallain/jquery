@@ -325,8 +325,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 				src = target[ name ];
 				copy = options[ name ];
 
+				// CVE-2019-11358 fix adapted for 1.10.2
+				// https://github.com/jquery/jquery/commit/753d591aea698e57d6db58c9f722cd0808619b1b
+				// Prevent Object.prototype pollution
 				// Prevent never-ending loop
-				if ( target === copy ) {
+				if ( name === "__proto__" || target === copy ) {
 					continue;
 				}
 

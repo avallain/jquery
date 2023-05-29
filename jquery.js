@@ -1,3 +1,4 @@
+/* AVA version from https://github.com/avallain/jquery.js */
 /*!
  * jQuery JavaScript Library v1.10.2
  * http://jquery.com/
@@ -9,7 +10,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2013-07-03T13:48Z
+ * Date: 2023-05-29T05:04Z
  */
 (function( window, undefined ) {
 
@@ -345,8 +346,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 				src = target[ name ];
 				copy = options[ name ];
 
+				// CVE-2019-11358 fix adapted for 1.10.2
+				// https://github.com/jquery/jquery/commit/753d591aea698e57d6db58c9f722cd0808619b1b
+				// Prevent Object.prototype pollution
 				// Prevent never-ending loop
-				if ( target === copy ) {
+				if ( name === "__proto__" || target === copy ) {
 					continue;
 				}
 
@@ -6152,7 +6156,9 @@ jQuery.fn.extend({
 				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
-				value = value.replace( rxhtmlTag, "<$1></$2>" );
+				// CVE-2020-11022 and CVE-2020-11023 workaround adapted for 1.10.2
+				// https://github.com/jquery/jquery/security/advisories/GHSA-gxr4-xjj5-5px2
+				// value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
 					for (; i < l; i++ ) {
@@ -8438,6 +8444,15 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 	return { state: "success", data: response };
 }
+// CVE-2015-9251 fix adapted for 1.10.2
+// https://github.com/jquery/jquery/commit/f60729f3903d17917dc351f3ac87794de379b0cc#commitcomment-29579880
+// Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
+jQuery.ajaxPrefilter( function( s ) {
+    if ( s.crossDomain ) {
+        s.contents.script = false;
+    }
+} );
+
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {

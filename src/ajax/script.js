@@ -1,3 +1,12 @@
+// CVE-2015-9251 fix adapted for 1.10.2
+// https://github.com/jquery/jquery/commit/f60729f3903d17917dc351f3ac87794de379b0cc#commitcomment-29579880
+// Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
+jQuery.ajaxPrefilter( function( s ) {
+    if ( s.crossDomain ) {
+        s.contents.script = false;
+    }
+} );
+
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {
